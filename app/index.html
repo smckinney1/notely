@@ -34,11 +34,11 @@
         </header>
       </div>
     </div>
-    <div class="container">
+    <div class="container" ng-controller="NotesController"> <!--referring to NotesController in the JS. Allows controller to be used everywhere inside the div.-->
       <div class="row">
         <div class="col-xs-4">
 
-          <nav id="sidebar" ng-controller="NotesController">   <!--referring to NotesController in the JS-->
+          <nav id="sidebar">
             <div class="well">
               <ul>
                 <li ng-repeat="note in notes">{{ note.title }}</li>     <!--Name of the collection ("notes") is from the controller in the JS and MUST be the same-->

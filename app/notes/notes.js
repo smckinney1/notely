@@ -6,9 +6,8 @@ var nevernoteBasePath = 'https://nevernote-1150.herokuapp.com/api/v1/',
 angular.module('notely.notes', ['ngRoute'])   //notes module. below is chained onto it, technically
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/notes', {     //when the URL is /notes, pass in some options
-    templateUrl: 'notes/notes.html',
-    controller: 'NotesController'
+  $routeProvider.when('/notes', {     //when the URL (route) is /notes, pass in some options
+    templateUrl: 'notes/notes.html'
   });
 }])
 
@@ -17,4 +16,16 @@ angular.module('notely.notes', ['ngRoute'])   //notes module. below is chained o
     .success(function(notesData) {			 //notesData will be the data from all the notes
       $scope.notes = notesData;
     });
+  $scope.commit = function() {      //referring to commit in notes.html. We're sending the note to the server.
+    $http.post(nevernoteBasePath + 'notes', {
+      api_key: apiKey,
+      note:  {
+        title: 'The magic of AngularJS',
+        body_html: 'Whoever wrote this API must be a person.'
+      }
+    }).success(function (newNoteData) {
+      console.log("SAVED");
+      console.log(newNoteData);
+    });
+  };
 }]);
