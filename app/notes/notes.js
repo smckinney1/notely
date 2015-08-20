@@ -39,8 +39,20 @@ noteApp.controller('NotesController', ['$scope', 'NotesBackend', function($scope
     return JSON.parse(JSON.stringify(note));  //Complicated way of cloning objects in JS...have to do this
   };
 
+  $scope.buttonText = function() {
+    if ($scope.note.id) {
+      return "Update Note";
+    }  else {
+      return "Create Note";
+    }
+  };
+
   $scope.commit = function() {
-    NotesBackend.postNote($scope.note, self.assignNotes);
+    if ($scope.note.id) {       //if there is an ID update existing note
+      NotesBackend.putNote($scope.note, self.assignNotes);
+    }  else {
+      NotesBackend.postNote($scope.note, self.assignNotes);   //otherwise create a new note
+    }
   };
 
   $scope.hasNotes = function () {

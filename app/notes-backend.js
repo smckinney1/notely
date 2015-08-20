@@ -29,4 +29,25 @@ app.service('NotesBackend', ['$http', function NotesBackend($http) {
       callback(notes);
     });
   };
+
+  self.putNote = function(noteData, callback) {
+    //Post a new note to the API
+    $http.put(nevernoteBasePath + 'notes/' + noteData.id, {
+      api_key: apiKey,
+      note: noteData
+    }).success(function(updatedNoteData) {
+      self.replaceNote(updatedNoteData.note, callback);
+    });
+  };
+
+  self.replaceNote = function(updatedNoteData, callback) {
+    for (var i = 0; i < notes.length; i++) {
+      if (notes[i].id === updatedNoteData.id) {
+        notes[i] = updatedNoteData;
+        callback(notes);
+        return updatedNoteData;
+      }
+    }
+  };
+
 }]);
