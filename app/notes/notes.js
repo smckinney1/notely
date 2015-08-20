@@ -1,30 +1,55 @@
 'use strict';
 
 var nevernoteBasePath = 'https://nevernote-1150.herokuapp.com/api/v1/',
-    apiKey = '$2a$10$C4PczP818rSDjW84gByiaOkgTqT2fV4u4f5TtggnFXyK3KQwFjUK.';
+    apiKey = '$2a$10$C4PczP818rSDjW84gByiaOkgTqT2fV4u4f5TtggnFXyK3KQwFjUK.',
+    noteApp = angular.module('notely.notes', ['ngRoute']);   //notes module. below is chained onto it, technically
 
-angular.module('notely.notes', ['ngRoute'])   //notes module. below is chained onto it, technically
-
-.config(['$routeProvider', function($routeProvider) {
+noteApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/notes', {     //when the URL (route) is /notes, pass in some options
     templateUrl: 'notes/notes.html'
   });
-}])
+}]);
 
-.controller('NotesController', ['$scope', '$http', function($scope, $http) {    //In this case we have to put the objects as strings before the function
-  $scope.note = {};                                                         //setting $scope.note to an empty object
+var noteApp = angular.module('notely.notes', ['ngRoute']);
 
-  $http.get(nevernoteBasePath + 'notes?api_key=' + apiKey)			//creates the URL for a specific note
-    .success(function(notesData) {			 //notesData will be the data from all the notes
-      $scope.notes = notesData;
-    });
+noteApp.config(['$routeProvider', function($routeProvider) {
+  $routeProvider.when('/notes', {
+    templateUrl: 'notes/notes.html'
+  });
+}]);
 
-$scope.commit = function() {
-   $http.post(nevernoteBasePath + 'notes', {
-     api_key: apiKey,
-     note: $scope.note
-   }).success(function(newNoteData) {
-     $scope.notes.unshift(newNoteData.note);      //adds item to beginning of array instead of the end (which push would do)
-   });
- };
+noteApp.controller('NotesController', ['$scope', 'NotesBackend', function($scope, NotesBackend) {
+  var self = this;
+  $scope.note = {};
+  $scope.notes = [];
+
+  self.assignNotes = function(notes) {
+    $scope.notes = notes;
+  };
+
+  self.findNoteById = function(noteId) {
+    for(var i = 0; i < $scope.notes.length; i++) {
+      if ($scope.notes[i].id === noteId) {
+        return $scope.notes[i];
+      }
+    }
+  };
+
+  self.cloneNote = function(note) {
+    return JSON.parse(JSON.stringify(note));  //Complicated way of cloning objects in JS...have to do this
+  };
+
+  $scope.commit = function() {
+    NotesBackend.postNote($scope.note, self.assignNotes);
+  };
+
+  $scope.hasNotes = function () {
+    return $scope.notes.length > 0;       //if self.notes.length >0, it'll return true...aka show the sidebar
+  };
+
+  $scope.loadNote = function(note) {
+    $scope.note = self.cloneNote(note);
+  };
+
+  NotesBackend.fetchNotes(self.assignNotes);
 }]);
