@@ -1,6 +1,7 @@
 <!--We want to show/hide the sidebar depending on whether or not the person has any notes stored.-->
 
 <nav id="sidebar" ng-show="hasNotes()"> <!--Showing the sidebar if there are items in notes-->
+  <button class="new-note btn btn-default" type="button" name="button" ng-click="clearNote()">New Note</button>
   <ul>
     <!-- Below is the sidebar that updates with new notes when saved-->
     <li ng-repeat="note in notes" ng-click="loadNote(note)">      <!--Name of the collection ("notes") is from the controller in the JS and MUST be the same-->

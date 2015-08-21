@@ -23,8 +23,9 @@ noteApp.controller('NotesController', ['$scope', 'NotesBackend', function($scope
   $scope.note = {};
   $scope.notes = [];
 
-  self.assignNotes = function(notes) {
+  self.assignNotes = function(notes, note) {
     $scope.notes = notes;
+    $scope.note = JSON.parse(JSON.stringify(note));
   };
 
   self.findNoteById = function(noteId) {
@@ -61,6 +62,10 @@ noteApp.controller('NotesController', ['$scope', 'NotesBackend', function($scope
 
   $scope.loadNote = function(note) {
     $scope.note = self.cloneNote(note);
+  };
+
+  $scope.clearNote = function() {       //making a new note while you're in an old one. It'll replace Edit form w/ New note form
+    $scope.note = {};
   };
 
   NotesBackend.fetchNotes(self.assignNotes);
