@@ -40,12 +40,33 @@ app.service('NotesBackend', ['$http', function NotesBackend($http) {
     });
   };
 
+//delete note from API
+self.deleteNote = function(noteData, callback) {
+ $http.delete(
+   nevernoteBasePath + 'notes/' + noteData.id +
+   '?api_key=' + apiKey
+ ).success(function(updatedNoteData) {
+   self.removeNote(noteData.id, callback);
+ });
+};
+
   self.replaceNote = function(updatedNoteData, callback) {
     for (var i = 0; i < notes.length; i++) {
       if (notes[i].id === updatedNoteData.id) {
         notes[i] = updatedNoteData;
         callback(notes, updatedNoteData);
         return updatedNoteData;
+      }
+    }
+  };
+
+//remove note from the array after deleting from API
+  self.removeNote = function(id, callback) {
+    for (var i = 0; i < notes.length; i++) {
+      if (notes[i].id === id) {
+        notes.splice(i, 1);
+        callback(notes, {});
+        return {};
       }
     }
   };

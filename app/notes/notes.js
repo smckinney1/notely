@@ -56,16 +56,25 @@ noteApp.controller('NotesController', ['$scope', 'NotesBackend', function($scope
     }
   };
 
+  $scope.deleteNote = function() {
+    NotesBackend.deleteNote($scope.note, function(notes, note) {
+      self.assignNotes(notes, note);
+      $scope.clearNote();
+    });
+  };
+
   $scope.hasNotes = function () {
     return $scope.notes.length > 0;       //if self.notes.length >0, it'll return true...aka show the sidebar
   };
 
   $scope.loadNote = function(note) {
     $scope.note = self.cloneNote(note);
+    $scope.$broadcast('noteLoaded');      //will focus mouse cursor in message body when clicking an existing note to edit
   };
 
   $scope.clearNote = function() {       //making a new note while you're in an old one. It'll replace Edit form w/ New note form
     $scope.note = {};
+    $scope.$broadcast('noteCleared');              //broadcasting a message from one Angular module to another
   };
 
   NotesBackend.fetchNotes(self.assignNotes);
